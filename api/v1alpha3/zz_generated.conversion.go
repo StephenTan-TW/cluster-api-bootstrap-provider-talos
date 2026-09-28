@@ -266,6 +266,7 @@ func autoConvert_v1alpha3_TalosConfigSpec_To_v1beta1_TalosConfigSpec(in *TalosCo
 	if err := Convert_v1alpha3_HostnameSpec_To_v1beta1_HostnameSpec(&in.Hostname, &out.Hostname, s); err != nil {
 		return err
 	}
+	out.AllowSchedulingOnControlPlanes = in.AllowSchedulingOnControlPlanes
 	return nil
 }
 
@@ -283,6 +284,7 @@ func autoConvert_v1beta1_TalosConfigSpec_To_v1alpha3_TalosConfigSpec(in *v1beta1
 	if err := Convert_v1beta1_HostnameSpec_To_v1alpha3_HostnameSpec(&in.Hostname, &out.Hostname, s); err != nil {
 		return err
 	}
+	out.AllowSchedulingOnControlPlanes = in.AllowSchedulingOnControlPlanes
 	return nil
 }
 
