@@ -37,6 +37,22 @@ type TalosConfigSpec struct {
 
 	// Set hostname in the machine configuration to some value.
 	Hostname HostnameSpec `json:"hostname,omitempty"`
+
+	// AllowSchedulingOnControlPlanes, when set to true, removes the
+	// node-role.kubernetes.io/control-plane:NoSchedule taint from generated
+	// control plane node configuration. This is required when running a
+	// control-plane-only cluster with no dedicated worker nodes, where all
+	// workloads must be schedulable on control plane nodes.
+	//
+	// In Talos v1.14 and later, the control-plane:NoSchedule taint is managed
+	// by the generated KubeNodeConfig document. When this field is false (the
+	// default), the taint is added automatically. The legacy v1alpha1
+	// cluster.allowSchedulingOnControlPlanes field cannot be used alongside
+	// the generated KubeNodeConfig document and will cause a boot-time
+	// validation failure.
+	//
+	// +optional
+	AllowSchedulingOnControlPlanes *bool `json:"allowSchedulingOnControlPlanes,omitempty"`
 	// Important: Run "make" to regenerate code after modifying this file
 }
 
