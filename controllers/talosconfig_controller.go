@@ -517,6 +517,10 @@ func (r *TalosConfigReconciler) genConfigs(ctx context.Context, scope *TalosConf
 		genOptions = append(genOptions, generate.WithClusterDiscovery(false))
 	}
 
+	if scope.Config.Spec.AllowSchedulingOnControlPlanes != nil && *scope.Config.Spec.AllowSchedulingOnControlPlanes {
+		genOptions = append(genOptions, generate.WithAllowSchedulingOnControlPlanes(true))
+	}
+
 	APIEndpointPort := strconv.Itoa(int(scope.Cluster.Spec.ControlPlaneEndpoint.Port))
 
 	input, err := generate.NewInput(

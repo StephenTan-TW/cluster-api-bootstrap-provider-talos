@@ -24,6 +24,14 @@ type TalosConfigSpec struct {
 	StrategicPatches []string `json:"strategicPatches,omitempty"`
 	// Set hostname in the machine configuration to some value.
 	Hostname HostnameSpec `json:"hostname,omitempty"`
+
+	// AllowSchedulingOnControlPlanes, when set to true, removes the
+	// node-role.kubernetes.io/control-plane:NoSchedule taint from generated
+	// control plane node configuration. Required for control-plane-only clusters
+	// on Talos v1.14+.
+	//
+	// +optional
+	AllowSchedulingOnControlPlanes *bool `json:"allowSchedulingOnControlPlanes,omitempty"`
 	// Important: Run "make" to regenerate code after modifying this file
 }
 

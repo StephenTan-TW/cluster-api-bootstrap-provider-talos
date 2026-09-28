@@ -239,6 +239,29 @@ func TestIntegration(t *testing.T) {
 		assert.Empty(t, provider.K8sAdmissionControlPluginConfigs())
 	})
 
+	t.Run("AllowSchedulingOnControlPlanes", func(t *testing.T) {
+		t.Parallel()
+
+		namespaceName := setupTest(ctx, t, c)
+		cluster := createCluster(ctx, t, c, namespaceName, nil)
+
+		allowScheduling := true
+		talosConfig := createTalosConfig(ctx, t, c, namespaceName, bootstrapv1alpha3.TalosConfigSpec{
+			GenerateType:                   talosmachine.TypeControlPlane.String(),
+			TalosVersion:                   TalosVersion,
+			AllowSchedulingOnControlPlanes: &allowScheduling,
+		})
+
+		createMachine(ctx, t, c, cluster, talosConfig, true)
+		waitForReady(ctx, t, c, talosConfig)
+
+		provider := assertMachineConfiguration(ctx, t, c, talosConfig)
+
+		// When AllowSchedulingOnControlPlanes is true, KubeNodeConfig must not
+		// carry the control-plane:NoSchedule taint.
+		assert.NotContains(t, provider.K8sNodeConfig().Taints(), constants.LabelNodeRoleControlPlane)
+	})
+
 	t.Run("LegacyClusterSecret", func(t *testing.T) {
 		t.Parallel()
 
