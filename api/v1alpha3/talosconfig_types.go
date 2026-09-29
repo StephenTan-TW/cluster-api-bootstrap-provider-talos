@@ -32,6 +32,15 @@ type TalosConfigSpec struct {
 	//
 	// +optional
 	AllowSchedulingOnControlPlanes *bool `json:"allowSchedulingOnControlPlanes,omitempty"`
+
+	// CustomCNIUrl, when set to a non-empty string, suppresses the generation of
+	// the KubeFlannelCNIConfig document. This prevents Talos from deploying
+	// Flannel at bootstrap time, allowing an external CNI (e.g. Cilium) to be
+	// installed without conflict. Set to any non-empty value to suppress Flannel;
+	// the value is passed to generate.WithCustomCNIUrl.
+	//
+	// +optional
+	CustomCNIUrl string `json:"customCNIUrl,omitempty"`
 	// Important: Run "make" to regenerate code after modifying this file
 }
 

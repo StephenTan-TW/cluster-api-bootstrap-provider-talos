@@ -262,6 +262,28 @@ func TestIntegration(t *testing.T) {
 		assert.NotContains(t, provider.K8sNodeConfig().Taints(), constants.LabelNodeRoleControlPlane)
 	})
 
+	t.Run("CustomCNIUrl", func(t *testing.T) {
+		t.Parallel()
+
+		namespaceName := setupTest(ctx, t, c)
+		cluster := createCluster(ctx, t, c, namespaceName, nil)
+
+		talosConfig := createTalosConfig(ctx, t, c, namespaceName, bootstrapv1alpha3.TalosConfigSpec{
+			GenerateType: talosmachine.TypeControlPlane.String(),
+			TalosVersion: TalosVersion,
+			CustomCNIUrl: "custom",
+		})
+
+		createMachine(ctx, t, c, cluster, talosConfig, true)
+		waitForReady(ctx, t, c, talosConfig)
+
+		provider := assertMachineConfiguration(ctx, t, c, talosConfig)
+
+		// When CustomCNIUrl is set, KubeFlannelCNIConfig must be absent from
+		// the generated configuration.
+		assert.Nil(t, provider.K8sFlannelCNIConfig())
+	})
+
 	t.Run("LegacyClusterSecret", func(t *testing.T) {
 		t.Parallel()
 
